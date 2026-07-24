@@ -362,95 +362,113 @@ export const Customers: React.FC = () => {
         onClose={() => setIsFormOpen(false)}
         title={editingCustomer ? "Edit Customer Details" : "Create New Customer"}
         size="lg"
+        footer={
+          <>
+            <button
+              type="button"
+              onClick={() => setIsFormOpen(false)}
+              className="h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold text-xs transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              form="customer-form"
+              className="h-10 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-card active:scale-95 transition-all"
+            >
+              {editingCustomer ? "Update Customer" : "Save Customer"}
+            </button>
+          </>
+        }
       >
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form id="customer-form" onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-text-secondary dark:text-slate-400 uppercase tracking-wider mb-1.5">Customer Name *</label>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Customer Name *</label>
               <input
                 type="text"
                 required
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-primary dark:text-slate-250"
+                className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 dark:text-white font-medium"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-text-secondary dark:text-slate-400 uppercase tracking-wider mb-1.5">Company Name</label>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Company Name</label>
               <input
                 type="text"
                 value={formData.company_name}
                 onChange={(e) => setFormData(prev => ({ ...prev, company_name: e.target.value }))}
-                className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-primary dark:text-slate-250"
+                className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 dark:text-white font-medium"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-text-secondary dark:text-slate-400 uppercase tracking-wider mb-1.5">Mobile Number *</label>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Mobile Number *</label>
               <input
                 type="tel"
                 required
                 value={formData.mobile}
                 onChange={(e) => setFormData(prev => ({ ...prev, mobile: e.target.value }))}
-                className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-primary dark:text-slate-250"
+                className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 dark:text-white font-medium"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-text-secondary dark:text-slate-400 uppercase tracking-wider mb-1.5">Email Address</label>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Email Address</label>
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-primary dark:text-slate-250"
+                className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 dark:text-white font-medium"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-text-secondary dark:text-slate-400 uppercase tracking-wider mb-1.5">GSTIN</label>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">GSTIN</label>
               <input
                 type="text"
                 placeholder="e.g. 27AAAAA0000A1Z5"
                 value={formData.gstin}
                 onChange={(e) => setFormData(prev => ({ ...prev, gstin: e.target.value.toUpperCase() }))}
                 maxLength={15}
-                className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-primary dark:text-slate-250"
+                className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 dark:text-white font-mono font-bold"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-text-secondary dark:text-slate-400 uppercase tracking-wider mb-1.5">PAN Number</label>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">PAN Number</label>
               <input
                 type="text"
                 placeholder="e.g. ABCDE1234F"
                 value={formData.pan}
                 onChange={(e) => setFormData(prev => ({ ...prev, pan: e.target.value.toUpperCase() }))}
                 maxLength={10}
-                className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-primary dark:text-slate-250"
+                className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 dark:text-white font-mono font-bold"
               />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-xs font-bold text-text-secondary dark:text-slate-400 uppercase tracking-wider mb-1.5">Billing Address *</label>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Billing Address *</label>
               <textarea
                 required
                 rows={2}
                 value={formData.address}
                 onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
-                className="w-full p-3 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-primary dark:text-slate-250"
+                className="w-full p-3 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 dark:text-white font-medium"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-text-secondary dark:text-slate-400 uppercase tracking-wider mb-1.5">City *</label>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">City *</label>
               <input
                 type="text"
                 required
                 value={formData.city}
                 onChange={(e) => setFormData(prev => ({ ...prev, city: e.target.value }))}
-                className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-primary dark:text-slate-250"
+                className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 dark:text-white font-medium"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-text-secondary dark:text-slate-400 uppercase tracking-wider mb-1.5">State *</label>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">State *</label>
               <select
                 value={formData.state}
                 onChange={(e) => handleStateChange(e.target.value)}
-                className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-primary dark:text-slate-250"
+                className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 dark:text-white font-medium"
               >
                 {INDIAN_STATES.map(s => (
                   <option key={s.code} value={s.name}>{s.name} ({s.code})</option>
@@ -458,48 +476,32 @@ export const Customers: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold text-text-secondary dark:text-slate-400 uppercase tracking-wider mb-1.5">State Code</label>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">State Code</label>
               <input
                 type="text"
                 readOnly
                 value={formData.state_code}
-                className="w-full h-10 px-3.5 text-sm border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 rounded-xl focus:outline-none text-text-secondary dark:text-slate-500 font-bold"
+                className="w-full h-10 px-3.5 text-sm border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 rounded-xl focus:outline-none text-slate-500 font-bold"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-text-secondary dark:text-slate-400 uppercase tracking-wider mb-1.5">Country</label>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Country</label>
               <input
                 type="text"
                 value={formData.country}
                 onChange={(e) => setFormData(prev => ({ ...prev, country: e.target.value }))}
-                className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-primary dark:text-slate-250"
+                className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 dark:text-white font-medium"
               />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-xs font-bold text-text-secondary dark:text-slate-400 uppercase tracking-wider mb-1.5">Additional Notes</label>
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Additional Notes</label>
               <textarea
                 rows={2}
                 value={formData.notes}
                 onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-                className="w-full p-3 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-primary dark:text-slate-250"
+                className="w-full p-3 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 dark:text-white font-medium"
               />
             </div>
-          </div>
-          
-          <div className="flex gap-3 justify-end pt-4 border-t border-slate-50 dark:border-slate-850">
-            <button
-              type="button"
-              onClick={() => setIsFormOpen(false)}
-              className="h-10 px-4 rounded-xl border border-slate-200 dark:border-slate-750 text-text-secondary hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800 font-semibold text-xs transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="h-10 px-5 rounded-xl bg-primary hover:bg-primary-dark text-white font-semibold text-xs shadow-soft transition-colors"
-            >
-              Save Customer
-            </button>
           </div>
         </form>
       </Dialog>
