@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
+import { prefetchCache } from '../services/prefetchCache';
 import { Invoice } from '../types';
 import { api } from '../services/api';
 import { Dialog } from '../components/ui/Dialog';
@@ -137,7 +138,7 @@ export const InvoiceHistory: React.FC = () => {
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
-              className="w-full h-10 px-3 text-sm bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 text-text-primary dark:text-slate-200 font-semibold"
+              className="w-full h-10 px-3 text-sm bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 text-text-primary dark:text-slate-200 font-normal"
             >
               <option value="">All Types</option>
               <option value="GST">GST Invoice</option>
@@ -149,7 +150,7 @@ export const InvoiceHistory: React.FC = () => {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full h-10 px-3 text-sm bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 text-text-primary dark:text-slate-200 font-semibold"
+              className="w-full h-10 px-3 text-sm bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 text-text-primary dark:text-slate-200 font-normal"
             >
               <option value="">All Statuses</option>
               <option value="Paid">Paid</option>
@@ -165,17 +166,17 @@ export const InvoiceHistory: React.FC = () => {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full h-10 px-3 text-xs bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 rounded-xl focus:outline-none text-text-secondary dark:text-slate-400 font-semibold"
+                className="w-full h-10 px-3 text-xs bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 rounded-xl focus:outline-none text-text-secondary dark:text-slate-400 font-normal"
                 title="Start Date"
               />
             </div>
-            <span className="text-text-light dark:text-slate-500 font-bold">to</span>
+            <span className="text-text-light dark:text-slate-500 font-medium">to</span>
             <div className="relative flex-grow">
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-full h-10 px-3 text-xs bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 rounded-xl focus:outline-none text-text-secondary dark:text-slate-400 font-semibold"
+                className="w-full h-10 px-3 text-xs bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 rounded-xl focus:outline-none text-text-secondary dark:text-slate-400 font-normal"
                 title="End Date"
               />
             </div>
@@ -187,13 +188,13 @@ export const InvoiceHistory: React.FC = () => {
       <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-6 shadow-soft space-y-4">
         <div className="flex justify-between items-center pb-2">
           <h3 className="text-sm uppercase font-bold tracking-wider text-text-secondary dark:text-slate-400">Invoice History Registry</h3>
-          <span className="text-xs text-text-light dark:text-slate-500 font-semibold">Showing {filteredInvoices.length} invoices</span>
+          <span className="text-xs text-text-light dark:text-slate-500 font-normal">Showing {filteredInvoices.length} invoices</span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-100 dark:border-slate-800 text-[10px] font-bold text-text-secondary dark:text-slate-400 uppercase tracking-wider">
+              <tr className="border-b border-slate-100 dark:border-slate-800 text-[10px] font-medium text-text-secondary dark:text-slate-400 uppercase tracking-wider">
                 <th className="pb-3.5 pl-2">Invoice No</th>
                 <th className="pb-3.5">Customer / Company</th>
                 <th className="pb-3.5">Type</th>
@@ -203,25 +204,30 @@ export const InvoiceHistory: React.FC = () => {
                 <th className="pb-3.5 text-right pr-2">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50 dark:divide-slate-850">
+            <tbody className="divide-y divide-slate-50 dark:divide-slate-850 font-normal">
               {filteredInvoices.length > 0 ? (
                 filteredInvoices.map((inv) => (
-                  <tr key={inv.id} className="text-sm text-text-primary dark:text-slate-200 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+                  <tr 
+                    key={inv.id} 
+                    onMouseEnter={() => prefetchCache.prefetchInvoiceDetails(inv)}
+                    onFocus={() => prefetchCache.prefetchInvoiceDetails(inv)}
+                    className="text-sm text-text-primary dark:text-slate-200 hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors"
+                  >
                     <td className="py-4 font-bold pl-2">
                       {inv.invoice_number}
                       {inv.id?.startsWith('draft_') && (
-                        <span className="ml-1.5 px-2 py-0.5 text-[9px] font-bold uppercase border border-amber-250 bg-amber-50 text-amber-600 rounded-full dark:bg-amber-950/20 dark:border-amber-800/20">
+                        <span className="ml-1.5 px-2 py-0.5 text-[9px] font-medium uppercase border border-amber-250 bg-amber-50 text-amber-600 rounded-full dark:bg-amber-950/20 dark:border-amber-800/20">
                           Draft
                         </span>
                       )}
                     </td>
                     <td className="py-4">
-                      <div className="font-semibold text-text-primary dark:text-slate-200">{inv.customer_snapshot.name}</div>
+                      <div className="font-normal text-text-primary dark:text-slate-200">{inv.customer_snapshot.name}</div>
                       <div className="text-[10px] text-text-secondary dark:text-slate-500">
                         {inv.customer_snapshot.company_name || 'Individual'} | {inv.customer_snapshot.mobile}
                       </div>
                     </td>
-                    <td className="py-4 text-xs font-semibold text-text-secondary dark:text-slate-400">
+                    <td className="py-4 text-xs font-normal text-text-secondary dark:text-slate-400">
                       {inv.invoice_type}
                     </td>
                     <td className="py-4 text-xs text-text-secondary dark:text-slate-400">
@@ -235,7 +241,7 @@ export const InvoiceHistory: React.FC = () => {
                       {formatRupee(inv.grand_total)}
                     </td>
                     <td className="py-4">
-                      <span className={`inline-flex px-2 py-1 rounded-full text-[9px] font-bold uppercase border
+                      <span className={`inline-flex px-2 py-1 rounded-full text-[9px] font-medium uppercase border
                         ${inv.payment_status === 'Paid' 
                           ? 'bg-emerald-50 border-emerald-200 text-emerald-600 dark:bg-emerald-950/20 dark:border-emerald-800/30 dark:text-emerald-400' 
                           : inv.payment_status === 'Partially Paid' 

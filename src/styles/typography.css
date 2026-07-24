@@ -1,0 +1,46 @@
+/* 
+ * InvoiceFlow Billing - Shared Typography System Token File
+ * Strict 3-Tier Font Weight Rule:
+ *  1. Headers (h1, h2, h3, h4, h5, h6, Main Titles): font-weight 700 (font-bold)
+ *  2. Subheaders (Section subtitles, labels, badge text, th headers): font-weight 500 (font-medium)
+ *  3. Body Text (Paragraphs, table data, inputs, buttons, helper text): font-weight 400 (font-normal)
+ * 
+ * NO OTHER FONT WEIGHT VALUES ARE PERMITTED.
+ */
+
+:root {
+  --font-weight-header: 700;
+  --font-weight-subheader: 500;
+  --font-weight-body: 400;
+}
+
+/* Base HTML Heading Styles */
+h1, h2, h3, h4, h5, h6,
+.font-header {
+  font-weight: 700 !important;
+}
+
+/* Subheaders, Labels, Badge Titles */
+label, th,
+.font-subheader {
+  font-weight: 500 !important;
+}
+
+/* Body Text, Inputs, Buttons, Data */
+p, td, input, select, textarea, button,
+.font-body {
+  font-weight: 400 !important;
+}
+
+/* System Weight Utility Overrides */
+.font-bold {
+  font-weight: 700 !important;
+}
+
+.font-medium {
+  font-weight: 500 !important;
+}
+
+.font-normal {
+  font-weight: 400 !important;
+}

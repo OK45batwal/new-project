@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { prefetchCache } from '../services/prefetchCache';
 import { Customer } from '../types';
 import { Dialog } from '../components/ui/Dialog';
 import { INDIAN_STATES } from '../utils/gstEngine';
@@ -154,13 +155,13 @@ export const Customers: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 pb-12 animate-fade-slide-up">
+    <div className="space-y-6 pb-12">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-5 shadow-soft flex items-center justify-between hover-lift">
           <div className="space-y-1">
-            <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Customers</span>
-            <h2 className="text-2xl font-black text-slate-900 dark:text-white">{customers.length}</h2>
+            <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Customers</span>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{customers.length}</h2>
           </div>
           <div className="p-3 rounded-2xl bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400">
             <Users className="h-5 w-5" />
@@ -169,8 +170,8 @@ export const Customers: React.FC = () => {
 
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-5 shadow-soft flex items-center justify-between hover-lift">
           <div className="space-y-1">
-            <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">GST Registered</span>
-            <h2 className="text-2xl font-black text-emerald-600 dark:text-emerald-400">{customers.filter(c => c.gstin).length}</h2>
+            <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">GST Registered</span>
+            <h2 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{customers.filter(c => c.gstin).length}</h2>
           </div>
           <div className="p-3 rounded-2xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400">
             <Building className="h-5 w-5" />
@@ -179,8 +180,8 @@ export const Customers: React.FC = () => {
 
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-5 shadow-soft flex items-center justify-between hover-lift">
           <div className="space-y-1">
-            <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-wider">Regular (Non-GST)</span>
-            <h2 className="text-2xl font-black text-slate-900 dark:text-white">{customers.filter(c => !c.gstin).length}</h2>
+            <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Regular (Non-GST)</span>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{customers.filter(c => !c.gstin).length}</h2>
           </div>
           <div className="p-3 rounded-2xl bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
             <Users className="h-5 w-5" />
@@ -259,7 +260,7 @@ export const Customers: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-100 dark:border-slate-800 text-[10px] font-extrabold uppercase tracking-wider text-text-secondary dark:text-slate-500 bg-slate-50/50 dark:bg-slate-900/50">
+              <tr className="border-b border-slate-100 dark:border-slate-800 text-[10px] font-medium uppercase tracking-wider text-text-secondary dark:text-slate-500 bg-slate-50/50 dark:bg-slate-900/50">
                 <th className="py-4 pl-6">Customer / Company</th>
                 <th className="py-4">Contact Info</th>
                 <th className="py-4">Location</th>
@@ -268,43 +269,48 @@ export const Customers: React.FC = () => {
                 <th className="py-4 text-right pr-6">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50 dark:divide-slate-850">
+            <tbody className="divide-y divide-slate-50 dark:divide-slate-850 font-normal">
               {filteredCustomers.length > 0 ? (
                 filteredCustomers.map(cust => {
                   const customerInvoices = getCustomerInvoices(cust.id);
                   const totalBilled = customerInvoices.reduce((sum, inv) => sum + (Number(inv.grand_total) || 0), 0);
 
                   return (
-                    <tr key={cust.id} className="hover:bg-slate-50/40 dark:hover:bg-slate-800/20 transition-colors">
+                    <tr 
+                      key={cust.id} 
+                      onMouseEnter={() => prefetchCache.prefetchCustomerHistory(cust.id, invoices)}
+                      onFocus={() => prefetchCache.prefetchCustomerHistory(cust.id, invoices)}
+                      className="hover:bg-slate-50/40 dark:hover:bg-slate-800/20 transition-colors"
+                    >
                       <td className="py-4 pl-6">
-                        <div className="font-extrabold text-sm text-text-primary dark:text-slate-200">{cust.name}</div>
+                        <div className="font-normal text-sm text-text-primary dark:text-slate-200">{cust.name}</div>
                         {cust.company_name && (
-                          <div className="text-[10px] text-text-secondary dark:text-slate-400 flex items-center gap-1 mt-0.5">
+                          <div className="text-[10px] text-text-secondary dark:text-slate-400 flex items-center gap-1 mt-0.5 font-normal">
                             <Building className="h-3 w-3 text-text-light" />
                             <span>{cust.company_name}</span>
                           </div>
                         )}
                       </td>
                       <td className="py-4">
-                        <div className="text-xs font-semibold text-text-primary dark:text-slate-200">{cust.mobile}</div>
+                        <div className="text-xs font-normal text-text-primary dark:text-slate-200">{cust.mobile}</div>
                         {cust.email && (
-                          <div className="text-[10px] text-text-secondary dark:text-slate-400 mt-0.5">{cust.email}</div>
+                          <div className="text-[10px] text-text-secondary dark:text-slate-400 mt-0.5 font-normal">{cust.email}</div>
                         )}
                       </td>
                       <td className="py-4">
-                        <div className="text-xs font-semibold text-text-primary dark:text-slate-200">{cust.city}</div>
-                        <span className="inline-flex mt-0.5 px-2 py-0.5 text-[9px] font-bold bg-slate-100 dark:bg-slate-800 text-text-secondary dark:text-slate-400 rounded-md">
+                        <div className="text-xs font-normal text-text-primary dark:text-slate-200">{cust.city}</div>
+                        <span className="inline-flex mt-0.5 px-2 py-0.5 text-[9px] font-medium bg-slate-100 dark:bg-slate-800 text-text-secondary dark:text-slate-400 rounded-md">
                           {cust.state}
                         </span>
                       </td>
                       <td className="py-4">
                         {cust.gstin ? (
-                          <div className="font-mono text-xs font-bold text-primary dark:text-primary-light">{cust.gstin}</div>
+                          <div className="font-mono text-xs font-normal text-primary dark:text-primary-light">{cust.gstin}</div>
                         ) : (
-                          <span className="text-[10px] text-text-light dark:text-slate-500 font-semibold italic">Unregistered</span>
+                          <span className="text-[10px] text-text-light dark:text-slate-500 font-normal italic">Unregistered</span>
                         )}
                         {cust.pan && (
-                          <div className="text-[9px] font-mono font-bold text-text-secondary dark:text-slate-400 mt-0.5">PAN: {cust.pan}</div>
+                          <div className="text-[9px] font-mono font-normal text-text-secondary dark:text-slate-400 mt-0.5">PAN: {cust.pan}</div>
                         )}
                       </td>
                       <td className="py-4">

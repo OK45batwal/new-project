@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { jsPDF } from 'jspdf';
 import QRCode from 'qrcode';
 import {
@@ -11,6 +11,7 @@ import {
 import { Invoice } from '../../types';
 import { numberToWords } from '../../utils/gstEngine';
 import { useApp } from '../../context/AppContext';
+import { prefetchCache } from '../../services/prefetchCache';
 
 interface ShareDialogProps {
   isOpen: boolean;
@@ -20,8 +21,16 @@ interface ShareDialogProps {
 }
 
 export const ShareDialog: React.FC<ShareDialogProps> = ({ isOpen, onClose, invoice, items }) => {
-  const { showToast } = useApp();
+  const { showToast, gstProfile, nongstProfile } = useApp();
   const isGst = invoice.invoice_type === 'GST';
+
+  // Early Execution: Pre-calculate share payloads, QR code, and mailto strings
+  useEffect(() => {
+    if (isOpen && invoice) {
+      const activeSeller = isGst ? gstProfile : nongstProfile;
+      prefetchCache.precomputeSharePayload(invoice, activeSeller);
+    }
+  }, [isOpen, invoice, isGst, gstProfile, nongstProfile]);
 
   /**
    * Generates a PDF that mirrors the A4 Live Print View exactly.
@@ -441,7 +450,7 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({ isOpen, onClose, invoi
       >
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h3 className="text-lg font-semibold text-text-primary dark:text-slate-100">Share Invoice</h3>
+            <h3 className="text-lg font-bold text-text-primary dark:text-slate-100">Share Invoice</h3>
             <p className="text-xs text-text-secondary dark:text-slate-400 mt-0.5">{invoice.invoice_number} — ₹{Number(invoice.grand_total).toFixed(2)}</p>
           </div>
           <button onClick={onClose} className="p-1.5 rounded-lg text-text-secondary hover:bg-slate-50 dark:text-slate-400 dark:hover:bg-slate-800 transition-colors">

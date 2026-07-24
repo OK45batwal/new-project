@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp, ActivePage } from '../../context/AppContext';
+import { prefetchCache } from '../../services/prefetchCache';
 import { Logo } from '../common/Logo';
 import { Menu, Sun, Moon, Search, Wifi, WifiOff, Building, Plus } from 'lucide-react';
 
@@ -130,7 +131,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="w-full h-9 pl-9 pr-8 text-xs bg-slate-100/80 dark:bg-slate-800/70 border border-slate-200/50 dark:border-slate-700/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 dark:text-slate-100 transition-all"
           />
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-            <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-[9px] font-bold text-slate-400 bg-slate-200/60 dark:bg-slate-700/60 dark:text-slate-400 rounded-md">
+            <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-[9px] font-medium text-slate-400 bg-slate-200/60 dark:bg-slate-700/60 dark:text-slate-400 rounded-md">
               ⌘K
             </kbd>
           </div>
@@ -145,14 +146,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                     {/* Invoices */}
                     {results.invoices.length > 0 && (
                       <div>
-                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-slate-500 px-2.5 py-1">Invoices</div>
+                        <div className="text-[10px] uppercase font-medium tracking-wider text-slate-400 dark:text-slate-500 px-2.5 py-1">Invoices</div>
                         {results.invoices.map(inv => (
                           <button
                             key={inv.id}
                             onClick={() => handleSearchResultClick('invoice-history')}
                             className="w-full text-left px-2.5 py-1.5 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-800/60 flex flex-col transition-colors"
                           >
-                            <span className="text-xs font-bold text-slate-900 dark:text-slate-200">{inv.invoice_number}</span>
+                            <span className="text-xs font-normal text-slate-900 dark:text-slate-200">{inv.invoice_number}</span>
                             <span className="text-[10px] text-slate-500 dark:text-slate-400">{inv.customer_snapshot.name} | ₹{inv.grand_total}</span>
                           </button>
                         ))}
@@ -161,14 +162,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                     {/* Products */}
                     {results.products.length > 0 && (
                       <div>
-                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-slate-500 px-2.5 py-1">Products</div>
+                        <div className="text-[10px] uppercase font-medium tracking-wider text-slate-400 dark:text-slate-500 px-2.5 py-1">Products</div>
                         {results.products.map(prod => (
                           <button
                             key={prod.id}
                             onClick={() => handleSearchResultClick('products')}
                             className="w-full text-left px-2.5 py-1.5 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-800/60 flex flex-col transition-colors"
                           >
-                            <span className="text-xs font-bold text-slate-900 dark:text-slate-200">{prod.name}</span>
+                            <span className="text-xs font-normal text-slate-900 dark:text-slate-200">{prod.name}</span>
                             <span className="text-[10px] text-slate-500 dark:text-slate-400">{prod.hsn_code ? `HSN: ${prod.hsn_code} | ` : ''}Rate: ₹{prod.selling_price}</span>
                           </button>
                         ))}
@@ -177,14 +178,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                     {/* Customers */}
                     {results.customers.length > 0 && (
                       <div>
-                        <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-slate-500 px-2.5 py-1">Customers</div>
+                        <div className="text-[10px] uppercase font-medium tracking-wider text-slate-400 dark:text-slate-500 px-2.5 py-1">Customers</div>
                         {results.customers.map(cust => (
                           <button
                             key={cust.id}
                             onClick={() => handleSearchResultClick('customers')}
                             className="w-full text-left px-2.5 py-1.5 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-800/60 flex flex-col transition-colors"
                           >
-                            <span className="text-xs font-bold text-slate-900 dark:text-slate-200">{cust.name}</span>
+                            <span className="text-xs font-normal text-slate-900 dark:text-slate-200">{cust.name}</span>
                             <span className="text-[10px] text-slate-500 dark:text-slate-400">{cust.company_name || 'Individual'} | {cust.mobile}</span>
                           </button>
                         ))}
@@ -192,7 +193,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     )}
                   </div>
                 ) : (
-                  <div className="text-xs text-center text-slate-500 dark:text-slate-400 py-6">
+                  <div className="text-xs text-center text-slate-500 dark:text-slate-400 py-6 font-normal">
                     No records matched "{searchQuery}"
                   </div>
                 )}
@@ -207,7 +208,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             setSelectedInvoiceIdForEdit(null);
             setActivePage('gst-invoice');
           }}
-          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-soft transition-all active:scale-95"
+          onMouseEnter={() => prefetchCache.prefetchPageData('gst-invoice', { customers, products, invoices })}
+          onFocus={() => prefetchCache.prefetchPageData('gst-invoice', { customers, products, invoices })}
+          className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-normal text-xs shadow-soft transition-all active:scale-95"
         >
           <Plus className="h-4 w-4" />
           <span>New Bill</span>
@@ -215,7 +218,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Connectivity Status */}
         <div 
-          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-colors
+          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors
             ${isOffline 
               ? 'bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-950/30 dark:border-amber-800/30 dark:text-amber-400' 
               : 'bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-950/30 dark:border-emerald-800/30 dark:text-emerald-400'
@@ -226,12 +229,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           {isOffline ? (
             <>
               <WifiOff className="h-3 w-3" />
-              <span className="hidden md:inline">Offline</span>
+              <span className="hidden md:inline font-medium">Offline</span>
             </>
           ) : (
             <>
               <Wifi className="h-3 w-3 animate-pulse" />
-              <span className="hidden md:inline">Online</span>
+              <span className="hidden md:inline font-medium">Online</span>
             </>
           )}
         </div>
@@ -258,7 +261,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
           <div className="hidden lg:flex flex-col">
-            <span className="text-xs font-bold text-slate-900 dark:text-slate-100 line-clamp-1 max-w-[110px]">
+            <span className="text-xs font-normal text-slate-900 dark:text-slate-100 line-clamp-1 max-w-[110px]">
               {profile?.business_name || 'My Business'}
             </span>
             <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium line-clamp-1 max-w-[110px]">

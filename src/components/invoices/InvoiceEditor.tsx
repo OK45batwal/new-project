@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
 import { useApp } from '../../context/AppContext';
-import { Invoice, InvoiceItem, Customer, PaymentMode, PaymentStatus } from '../../types';
+import { prefetchCache } from '../../services/prefetchCache';
+import { Invoice, InvoiceItem, Customer, PaymentMode, PaymentStatus, BusinessProfile } from '../../types';
 import { calculateInvoiceTotals, numberToWords, INDIAN_STATES } from '../../utils/gstEngine';
 import { Dialog } from '../ui/Dialog';
 import { ShareDialog } from './ShareDialog';
@@ -125,23 +126,64 @@ export const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ type }) => {
     }
   }, [editInvoice, invoices, type]);
 
-  // Auto-generate UPI QR code whenever UPI ID or grand total changes
+  // Early Execution: Auto-calculate totals, pre-generate UPI QR code, and stage draft in real-time background
   useEffect(() => {
-    if (type !== 'Non-GST' || !profile?.upi_id) {
+    const sellerProfile = profile || ({
+      business_name: 'Company',
+      address: 'Address',
+      city: 'City',
+      state: 'Maharashtra',
+      state_code: '27',
+      phone: ''
+    } as BusinessProfile);
+
+    // Background pre-calculation
+    prefetchCache.precomputeInvoiceCalc(items, sellerProfile, placeOfSupply, profile?.upi_id).then(calc => {
+      if (calc.qr_code_url) {
+        setUpiQrDataUrl(calc.qr_code_url);
+      }
+    });
+
+    // Generate UPI QR data URL fallback if upi_id is set
+    if (profile?.upi_id) {
+      const grandTotal = calculateInvoiceTotals(items, sellerProfile!, placeOfSupply).grand_total;
+      const upiString = `upi://pay?pa=${encodeURIComponent(profile.upi_id)}&pn=${encodeURIComponent(profile.business_name || '')}&am=${grandTotal.toFixed(2)}&cu=INR&tn=${encodeURIComponent(`Invoice ${invoiceNumber}`)}`.trim();
+      QRCode.toDataURL(upiString, {
+        width: 120,
+        margin: 1,
+        color: { dark: '#000000', light: '#ffffff' }
+      })
+        .then(url => setUpiQrDataUrl(url))
+        .catch(() => {});
+    } else {
       setUpiQrDataUrl('');
-      return;
     }
-    const sellerProfile = profile || { state: '' } as typeof profile;
-    const grandTotal = calculateInvoiceTotals(items, sellerProfile!, placeOfSupply).grand_total;
-    const upiString = `upi://pay?pa=${encodeURIComponent(profile.upi_id)}&pn=${encodeURIComponent(profile.business_name || '')}&am=${grandTotal.toFixed(2)}&cu=INR&tn=${encodeURIComponent(`Invoice ${invoiceNumber}`)}`.trim();
-    QRCode.toDataURL(upiString, {
-      width: 120,
-      margin: 1,
-      color: { dark: '#000000', light: '#ffffff' }
-    })
-      .then(url => setUpiQrDataUrl(url))
-      .catch(() => setUpiQrDataUrl(''));
-  }, [profile, items, type, invoiceNumber, placeOfSupply]);
+
+    // Auto-stage temporary background draft so clicking save/generate only commits pre-staged payload
+    const currentTotals = calculateInvoiceTotals(items, sellerProfile!, placeOfSupply);
+    prefetchCache.stageDraftInvoice({
+      invoice_number: invoiceNumber,
+      invoice_type: type,
+      invoice_date: invoiceDate,
+      due_date: dueDate || undefined,
+      payment_mode: paymentMode,
+      payment_status: paymentStatus,
+      place_of_supply: placeOfSupply,
+      reverse_charge: reverseCharge,
+      customer_id: selectedCustomerId,
+      customer_snapshot: customerDetails || undefined,
+      seller_snapshot: profile || undefined,
+      subtotal: currentTotals.subtotal,
+      cgst_total: currentTotals.cgst_total,
+      sgst_total: currentTotals.sgst_total,
+      igst_total: currentTotals.igst_total,
+      round_off: currentTotals.round_off,
+      grand_total: currentTotals.grand_total,
+      notes,
+      terms_conditions: terms,
+      items: currentTotals.items
+    });
+  }, [profile, items, type, invoiceNumber, placeOfSupply, invoiceDate, dueDate, paymentMode, paymentStatus, reverseCharge, selectedCustomerId, customerDetails, notes, terms]);
 
   // Handle customer selection change
   const handleCustomerChange = (id: string) => {
@@ -713,30 +755,30 @@ export const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ type }) => {
             {/* ────────────── INVOICE META ────────────── */}
             <div className="flex justify-between items-center px-6 py-2.5 bg-slate-50 border-b border-slate-200 text-[9px] text-slate-600">
               <div className="flex gap-6">
-                <span><span className="font-semibold text-slate-700">{type === 'GST' ? 'Invoice' : 'Bill'} No:</span> {invoiceNumber}</span>
-                <span><span className="font-semibold text-slate-700">Date:</span> {new Date(invoiceDate).toLocaleDateString('en-IN')}</span>
-                {dueDate && <span><span className="font-semibold text-slate-700">Due:</span> {new Date(dueDate).toLocaleDateString('en-IN')}</span>}
+                <span><span className="font-medium text-slate-700">{type === 'GST' ? 'Invoice' : 'Bill'} No:</span> {invoiceNumber}</span>
+                <span><span className="font-medium text-slate-700">Date:</span> {new Date(invoiceDate).toLocaleDateString('en-IN')}</span>
+                {dueDate && <span><span className="font-medium text-slate-700">Due:</span> {new Date(dueDate).toLocaleDateString('en-IN')}</span>}
               </div>
               <div>
-                {type === 'GST' && <span><span className="font-semibold text-slate-700">Place of Supply:</span> {placeOfSupply}</span>}
+                {type === 'GST' && <span><span className="font-medium text-slate-700">Place of Supply:</span> {placeOfSupply}</span>}
               </div>
             </div>
 
             {/* ────────────── BILL FROM / BILL TO ────────────── */}
             <div className="grid grid-cols-2 gap-0 px-6 py-3 border-b border-slate-200">
               <div className="pr-4">
-                <div className="text-[8px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Bill From</div>
+                <div className="text-[8px] font-medium uppercase tracking-wider text-slate-500 mb-1.5">Bill From</div>
                 <div className="text-[9px] leading-relaxed text-slate-700">
-                  <div className="font-semibold text-slate-800">{sellerObj.business_name}</div>
+                  <div className="font-medium text-slate-800">{sellerObj.business_name}</div>
                   {profile?.gstin && <div className="text-slate-500">GSTIN: {profile.gstin}</div>}
                   <div className="text-slate-500">{sellerObj.address}, {sellerObj.city}, {sellerObj.state}</div>
                   <div className="text-slate-500">Phone: {sellerObj.phone}</div>
                 </div>
               </div>
               <div className="pl-4 border-l border-slate-200">
-                <div className="text-[8px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Bill To</div>
+                <div className="text-[8px] font-medium uppercase tracking-wider text-slate-500 mb-1.5">Bill To</div>
                 <div className="text-[9px] leading-relaxed text-slate-700">
-                  <div className="font-semibold text-slate-800">{customerDetails?.name || 'Customer Name'}</div>
+                  <div className="font-medium text-slate-800">{customerDetails?.name || 'Customer Name'}</div>
                   {customerDetails?.gstin && <div className="text-slate-500">GSTIN: {customerDetails.gstin}</div>}
                   <div className="text-slate-500">{customerDetails?.address || ''}, {customerDetails?.city || ''}, {customerDetails?.state || ''}</div>
                   <div className="text-slate-500">Phone: {customerDetails?.mobile || ''}</div>
@@ -749,7 +791,7 @@ export const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ type }) => {
             <div className="px-6 py-3">
               <table className="w-full text-left border-collapse text-[9px]">
                 <thead>
-                  <tr className="bg-slate-100 text-slate-600 font-semibold uppercase text-[8px] tracking-wider">
+                  <tr className="bg-slate-100 text-slate-600 font-medium uppercase text-[8px] tracking-wider">
                     <th className="p-1.5 text-center w-6">#</th>
                     <th className="p-1.5">Item</th>
                     {type === 'GST' && <th className="p-1.5 text-center w-12">HSN</th>}
@@ -759,11 +801,11 @@ export const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ type }) => {
                     <th className="p-1.5 text-right w-16">Amount</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="font-normal">
                   {totals.items.map((item, idx) => (
                     <tr key={idx} className="border-b border-slate-200 last:border-b-0 hover:bg-slate-50/50">
                       <td className="p-1.5 text-center text-slate-400">{idx + 1}</td>
-                      <td className="p-1.5 font-medium text-slate-800">
+                      <td className="p-1.5 font-normal text-slate-800">
                         {item.product_name}
                         {item.description && <div className="text-[7px] text-slate-400 font-normal">{item.description}</div>}
                       </td>
@@ -771,7 +813,7 @@ export const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ type }) => {
                       <td className="p-1.5 text-right text-slate-700">{item.quantity}</td>
                       <td className="p-1.5 text-right text-slate-700">₹{item.rate.toFixed(2)}</td>
                       {type === 'GST' && <td className="p-1.5 text-right text-slate-600">{item.gst_rate}%</td>}
-                      <td className="p-1.5 text-right font-semibold text-slate-800">₹{(item.rate * (1 - item.discount_pct / 100) * item.quantity).toFixed(2)}</td>
+                      <td className="p-1.5 text-right font-normal text-slate-800">₹{(item.rate * (1 - item.discount_pct / 100) * item.quantity).toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -781,10 +823,10 @@ export const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ type }) => {
             {/* ────────────── TOTALS PANEL ────────────── */}
             <div className="flex justify-end px-6 pb-3">
               <div className="w-56 bg-slate-50 rounded-lg border border-slate-200 p-3">
-                <div className="space-y-1.5 text-[9px]">
+                <div className="space-y-1.5 text-[9px] font-normal">
                   <div className="flex justify-between">
                     <span className="text-slate-500">{type === 'GST' ? 'Taxable Amount' : 'Subtotal'}</span>
-                    <span className="font-semibold text-slate-800">₹{totals.subtotal.toFixed(2)}</span>
+                    <span className="font-normal text-slate-800">₹{totals.subtotal.toFixed(2)}</span>
                   </div>
                   {type === 'GST' && !isIGST && totals.cgst_total > 0 && (
                     <div className="flex justify-between">

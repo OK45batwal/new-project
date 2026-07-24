@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { BusinessProfile } from '../types';
 import { api } from '../services/api';
+import { prefetchCache } from '../services/prefetchCache';
 import { INDIAN_STATES } from '../utils/gstEngine';
-import { Save, Building, CreditCard, Shield, Download, UploadCloud } from 'lucide-react';
+import { Save, Building, CreditCard, Shield, Download, UploadCloud, CheckCircle2, Image as ImageIcon } from 'lucide-react';
 
 export const Settings: React.FC = () => {
   const { gstProfile, nongstProfile, updateProfile, showToast, customers, products, invoices } = useApp();
   const [editingProfileType, setEditingProfileType] = useState<'GST' | 'Non-GST'>('GST');
   const activeProfile = editingProfileType === 'GST' ? gstProfile : nongstProfile;
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [stagedLogoInfo, setStagedLogoInfo] = useState<{ name: string; sizeKb: number } | null>(null);
 
   const [formData, setFormData] = useState<BusinessProfile>({
     business_name: '',
@@ -35,6 +38,7 @@ export const Settings: React.FC = () => {
 
   // Load profile values
   useEffect(() => {
+    setStagedLogoInfo(null);
     if (activeProfile) {
       setFormData(activeProfile);
     } else {
@@ -60,6 +64,27 @@ export const Settings: React.FC = () => {
       });
     }
   }, [activeProfile, editingProfileType]);
+
+  // Early File Execution: Process, validate & stage logo as soon as file is chosen
+  const handleLogoFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      showToast('Please select a valid image file (PNG, JPG, SVG, WebP)', 'danger');
+      return;
+    }
+
+    try {
+      showToast('Processing logo image in background...', 'info');
+      const { dataUrl, sizeKb } = await prefetchCache.stageLogoAsset(file);
+      setFormData(prev => ({ ...prev, logo_url: dataUrl }));
+      setStagedLogoInfo({ name: file.name, sizeKb });
+      showToast(`Logo processed & staged successfully (${sizeKb} KB)!`, 'success');
+    } catch (err: any) {
+      showToast('Failed to process image file.', 'danger');
+    }
+  };
 
   // Handle state change & update state code
   const handleStateChange = (stateName: string) => {
@@ -233,14 +258,40 @@ export const Settings: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-text-secondary uppercase tracking-wider mb-1.5">Business Logo URL</label>
-                    <input
-                      type="url"
-                      placeholder="https://..."
-                      value={formData.logo_url}
-                      onChange={(e) => handleFieldChange('logo_url', e.target.value)}
-                      className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl text-text-primary dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                    />
+                    <div className="flex justify-between items-center mb-1.5">
+                      <label className="block text-[10px] font-medium text-text-secondary uppercase tracking-wider">Business Logo</label>
+                      {stagedLogoInfo && (
+                        <span className="inline-flex items-center gap-1 text-[9px] font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800/30">
+                          <CheckCircle2 className="h-3 w-3" />
+                          Staged & Ready ({stagedLogoInfo.sizeKb} KB)
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <input
+                        type="url"
+                        placeholder="https://... or upload file"
+                        value={formData.logo_url}
+                        onChange={(e) => handleFieldChange('logo_url', e.target.value)}
+                        className="w-full h-10 px-3.5 text-sm border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl text-text-primary dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                      />
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        accept="image/*"
+                        onChange={handleLogoFileSelect}
+                        className="hidden"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="h-10 px-3 flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-750 text-text-secondary dark:text-slate-300 text-xs font-normal transition-colors whitespace-nowrap"
+                        title="Early execution file upload — processes and stages logo immediately"
+                      >
+                        <UploadCloud className="h-4 w-4" />
+                        <span>Upload</span>
+                      </button>
+                    </div>
                   </div>
                   {editingProfileType === 'GST' && (
                     <>

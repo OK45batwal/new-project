@@ -125,28 +125,28 @@ export const InvoiceView: React.FC<InvoiceViewProps> = ({ invoiceId, onBack }) =
           {/* ─── INVOICE META ─── */}
           <div className="flex justify-between items-center px-6 py-2.5 bg-slate-50 border-b border-slate-200 text-[9px] text-slate-500">
             <div className="flex gap-6">
-              <span><span className="font-semibold text-slate-700">{isGst ? 'Invoice' : 'Bill'} No:</span> {invoice.invoice_number}</span>
-              <span><span className="font-semibold text-slate-700">Date:</span> {new Date(invoice.invoice_date).toLocaleDateString('en-IN')}</span>
-              {invoice.due_date && <span><span className="font-semibold text-slate-700">Due:</span> {new Date(invoice.due_date).toLocaleDateString('en-IN')}</span>}
+              <span><span className="font-medium text-slate-700">{isGst ? 'Invoice' : 'Bill'} No:</span> {invoice.invoice_number}</span>
+              <span><span className="font-medium text-slate-700">Date:</span> {new Date(invoice.invoice_date).toLocaleDateString('en-IN')}</span>
+              {invoice.due_date && <span><span className="font-medium text-slate-700">Due:</span> {new Date(invoice.due_date).toLocaleDateString('en-IN')}</span>}
             </div>
-            {isGst && <span><span className="font-semibold text-slate-700">Place of Supply:</span> {invoice.place_of_supply}</span>}
+            {isGst && <span><span className="font-medium text-slate-700">Place of Supply:</span> {invoice.place_of_supply}</span>}
           </div>
 
           {/* ─── BILL FROM / BILL TO ─── */}
           <div className="grid grid-cols-2 gap-0 px-6 py-3 border-b border-slate-200">
             <div className="pr-4">
-              <div className="text-[8px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Bill From</div>
+              <div className="text-[8px] font-medium uppercase tracking-wider text-slate-500 mb-1.5">Bill From</div>
               <div className="text-[9px] leading-relaxed text-slate-700">
-                <div className="font-semibold text-slate-800">{sel.business_name}</div>
+                <div className="font-medium text-slate-800">{sel.business_name}</div>
                 {sel.gstin && <div className="text-slate-500">GSTIN: {sel.gstin}</div>}
                 <div className="text-slate-500">{sel.address}, {sel.city}, {sel.state}</div>
                 <div className="text-slate-500">Phone: {sel.phone}</div>
               </div>
             </div>
             <div className="pl-4 border-l border-slate-200">
-              <div className="text-[8px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Bill To</div>
+              <div className="text-[8px] font-medium uppercase tracking-wider text-slate-500 mb-1.5">Bill To</div>
               <div className="text-[9px] leading-relaxed text-slate-700">
-                <div className="font-semibold text-slate-800">{s.name}</div>
+                <div className="font-medium text-slate-800">{s.name}</div>
                 {s.company_name && <div className="text-slate-500">{s.company_name}</div>}
                 {s.gstin && <div className="text-slate-500">GSTIN: {s.gstin}</div>}
                 <div className="text-slate-500">{s.address}, {s.city}, {s.state}</div>
@@ -160,7 +160,7 @@ export const InvoiceView: React.FC<InvoiceViewProps> = ({ invoiceId, onBack }) =
           <div className="px-6 py-3">
             <table className="w-full text-left border-collapse text-[9px]">
               <thead>
-                <tr className="bg-slate-100 text-slate-500 font-semibold uppercase text-[8px] tracking-wider">
+                <tr className="bg-slate-100 text-slate-500 font-medium uppercase text-[8px] tracking-wider">
                   <th className="p-1.5 text-center w-6">#</th>
                   <th className="p-1.5">Item</th>
                   {isGst && <th className="p-1.5 text-center w-12">HSN</th>}
@@ -170,11 +170,11 @@ export const InvoiceView: React.FC<InvoiceViewProps> = ({ invoiceId, onBack }) =
                   <th className="p-1.5 text-right w-16">Amount</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="font-normal">
                 {items.map((item: any, idx: number) => (
                   <tr key={idx} className="border-b border-slate-200 last:border-b-0">
                     <td className="p-1.5 text-center text-slate-400">{idx + 1}</td>
-                    <td className="p-1.5 font-medium text-slate-800">
+                    <td className="p-1.5 font-normal text-slate-800">
                       {item.product_name}
                       {item.description && <div className="text-[7px] text-slate-400 font-normal">{item.description}</div>}
                     </td>
@@ -182,7 +182,7 @@ export const InvoiceView: React.FC<InvoiceViewProps> = ({ invoiceId, onBack }) =
                     <td className="p-1.5 text-right text-slate-700">{item.quantity}</td>
                     <td className="p-1.5 text-right text-slate-700">₹{Number(item.rate).toFixed(2)}</td>
                     {isGst && <td className="p-1.5 text-right text-slate-600">{item.gst_rate}%</td>}
-                    <td className="p-1.5 text-right font-semibold text-slate-800">
+                    <td className="p-1.5 text-right font-normal text-slate-800">
                       ₹{(Number(item.rate) * (1 - Number(item.discount_pct) / 100) * Number(item.quantity)).toFixed(2)}
                     </td>
                   </tr>
@@ -194,10 +194,10 @@ export const InvoiceView: React.FC<InvoiceViewProps> = ({ invoiceId, onBack }) =
           {/* ─── TOTALS PANEL ─── */}
           <div className="flex justify-end px-6 pb-3">
             <div className="w-56 bg-slate-50 rounded-lg border border-slate-200 p-3">
-              <div className="space-y-1.5 text-[9px]">
+              <div className="space-y-1.5 text-[9px] font-normal">
                 <div className="flex justify-between">
                   <span className="text-slate-500">{isGst ? 'Taxable Amount' : 'Subtotal'}</span>
-                  <span className="font-semibold text-slate-800">₹{Number(totals.subtotal).toFixed(2)}</span>
+                  <span className="font-normal text-slate-800">₹{Number(totals.subtotal).toFixed(2)}</span>
                 </div>
                 {isGst && totals.cgst_total > 0 && (
                   <div className="flex justify-between">
@@ -237,7 +237,7 @@ export const InvoiceView: React.FC<InvoiceViewProps> = ({ invoiceId, onBack }) =
                 )}
                 <div className="border-t border-slate-300 pt-1.5 mt-1.5 flex justify-between font-bold text-slate-800">
                   <span className="uppercase text-[10px]">{isGst ? 'Grand Total' : 'TOTAL'}</span>
-                  <span className="text-sm">₹{totals.grand_total.toFixed(2)}</span>
+                  <span className="text-sm font-bold">₹{totals.grand_total.toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -245,23 +245,23 @@ export const InvoiceView: React.FC<InvoiceViewProps> = ({ invoiceId, onBack }) =
 
           {/* ─── AMOUNT IN WORDS ─── */}
           <div className="px-6 py-2 border-t border-slate-200 bg-slate-50/50">
-            <span className="text-[8px] font-bold uppercase tracking-wide text-slate-500">Amount in Words: </span>
-            <span className="text-[9px] font-medium text-slate-700 italic">{numberToWords(totals.grand_total)}</span>
+            <span className="text-[8px] font-medium uppercase tracking-wide text-slate-500">Amount in Words: </span>
+            <span className="text-[9px] font-normal text-slate-700 italic">{numberToWords(totals.grand_total)}</span>
           </div>
 
           {/* ─── BANK DETAILS + QR ─── */}
           <div className="grid grid-cols-2 gap-0 px-6 py-3 border-t border-slate-200">
-            <div className="text-[8px] text-slate-500 space-y-0.5">
-              <div className="font-bold text-slate-700 uppercase text-[8px] tracking-wide mb-1">Bank Details</div>
-              <div>Bank: <span className="font-medium text-slate-700">{sel.bank_name || '-'}</span></div>
-              <div>A/C: <span className="font-medium text-slate-700">{sel.account_number || '-'}</span></div>
-              <div>IFSC: <span className="font-medium text-slate-700">{sel.ifsc_code || '-'}</span></div>
-              {sel.upi_id && <div>UPI: <span className="font-medium text-slate-700">{sel.upi_id}</span></div>}
+            <div className="text-[8px] text-slate-500 space-y-0.5 font-normal">
+              <div className="font-medium text-slate-700 uppercase text-[8px] tracking-wide mb-1">Bank Details</div>
+              <div>Bank: <span className="font-normal text-slate-700">{sel.bank_name || '-'}</span></div>
+              <div>A/C: <span className="font-normal text-slate-700">{sel.account_number || '-'}</span></div>
+              <div>IFSC: <span className="font-normal text-slate-700">{sel.ifsc_code || '-'}</span></div>
+              {sel.upi_id && <div>UPI: <span className="font-normal text-slate-700">{sel.upi_id}</span></div>}
             </div>
             <div className="flex flex-col items-end justify-start">
               {upiQrDataUrl ? (
                 <div className="flex flex-col items-center">
-                  <div className="text-[7px] font-bold uppercase tracking-wide text-slate-500 mb-0.5">Scan to Pay</div>
+                  <div className="text-[7px] font-medium uppercase tracking-wide text-slate-500 mb-0.5">Scan to Pay</div>
                   <img src={upiQrDataUrl} alt="UPI QR" className="w-14 h-14 border border-slate-300 rounded" />
                   <div className="text-[6px] text-slate-400 mt-0.5 max-w-[80px] break-all text-center">{sel.upi_id}</div>
                 </div>
@@ -274,14 +274,14 @@ export const InvoiceView: React.FC<InvoiceViewProps> = ({ invoiceId, onBack }) =
           {/* ─── TERMS & SIGNATURE ─── */}
           <div className="grid grid-cols-2 gap-0 px-6 py-3 border-t border-slate-200">
             <div className="pr-4">
-              <div className="text-[8px] font-bold uppercase tracking-wide text-slate-500 mb-0.5">Terms &amp; Conditions</div>
-              <div className="text-[8px] text-slate-500 leading-relaxed whitespace-pre-line">{invoice.terms_conditions}</div>
+              <div className="text-[8px] font-medium uppercase tracking-wide text-slate-500 mb-0.5">Terms &amp; Conditions</div>
+              <div className="text-[8px] text-slate-500 leading-relaxed whitespace-pre-line font-normal">{invoice.terms_conditions}</div>
             </div>
             <div className="flex flex-col items-end justify-end pl-4 border-l border-slate-200">
               <div className="text-right">
-                <div className="text-[8px] text-slate-500">For <span className="font-semibold text-slate-700">{sel.business_name}</span></div>
+                <div className="text-[8px] text-slate-500 font-normal">For <span className="font-medium text-slate-700">{sel.business_name}</span></div>
                 <div className="w-28 border-b border-dashed border-slate-300 mt-5 mb-0.5" />
-                <div className="text-[9px] font-semibold text-slate-700">Authorized Signature</div>
+                <div className="text-[9px] font-medium text-slate-700">Authorized Signature</div>
               </div>
             </div>
           </div>

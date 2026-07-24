@@ -108,7 +108,7 @@ export const Logo: React.FC<LogoProps> = ({
       <div className={`inline-flex items-center gap-3 p-3.5 rounded-2xl bg-[#0A1128] text-white shadow-premium ${className}`}>
         {LogoMarkSVG}
         <div className="flex flex-col justify-center">
-          <div className={`font-black tracking-tight ${dimensions.text} flex items-center leading-none text-white`}>
+          <div className={`font-bold tracking-tight ${dimensions.text} flex items-center leading-none text-white`}>
             <span>invoiceflow</span>
             <span className="text-[#38BDF8] font-bold">-billing</span>
           </div>
@@ -137,13 +137,13 @@ export const Logo: React.FC<LogoProps> = ({
       {LogoMarkSVG}
 
       <div className="flex flex-col justify-center min-w-0">
-        <div className={`font-black tracking-tight ${dimensions.text} flex items-center leading-none whitespace-nowrap`}>
+        <div className={`font-bold tracking-tight ${dimensions.text} flex items-center leading-none whitespace-nowrap`}>
           <span className="text-[#0A1128] dark:text-white">invoiceflow</span>
-          <span className="text-blue-600 dark:text-blue-400 font-extrabold">-billing</span>
+          <span className="text-blue-600 dark:text-blue-400 font-bold">-billing</span>
         </div>
         
         {showTagline && (
-          <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 font-semibold text-[9.5px] mt-1 tracking-wide whitespace-nowrap">
+          <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 font-medium text-[9.5px] mt-1 tracking-wide whitespace-nowrap">
             <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
             <span>Smart Invoicing. Smooth Payments.</span>
           </div>

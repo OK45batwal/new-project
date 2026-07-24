@@ -226,40 +226,40 @@ export const Reports: React.FC = () => {
         </button>
       </div>
 
-      {/* Aggregate metrics */}
+      {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-6 shadow-soft space-y-1.5">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-text-secondary dark:text-slate-500">Gross Turnover</span>
-          <h2 className="text-xl font-extrabold text-text-primary dark:text-slate-150">{formatRupee(report?.totalSales || 0)}</h2>
-          <div className="text-[10px] text-text-light dark:text-slate-500 flex items-center gap-1">
+          <span className="text-[10px] font-medium uppercase tracking-wider text-text-secondary dark:text-slate-500">Gross Turnover</span>
+          <h2 className="text-xl font-bold text-text-primary dark:text-slate-150">{formatRupee(report?.totalSales || 0)}</h2>
+          <div className="text-[10px] text-text-light dark:text-slate-500 flex items-center gap-1 font-normal">
             <IndianRupee className="h-3 w-3" />
             <span>Inclusive of all taxes</span>
           </div>
         </div>
 
         <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-6 shadow-soft space-y-1.5">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-text-secondary dark:text-slate-500">Total Tax Collected</span>
-          <h2 className="text-xl font-extrabold text-blue-600 dark:text-blue-400">{formatRupee(report?.totalTax || 0)}</h2>
-          <div className="text-[10px] text-text-light dark:text-slate-500 flex items-center gap-1">
+          <span className="text-[10px] font-medium uppercase tracking-wider text-text-secondary dark:text-slate-500">Total Tax Collected</span>
+          <h2 className="text-xl font-bold text-blue-600 dark:text-blue-400">{formatRupee(report?.totalTax || 0)}</h2>
+          <div className="text-[10px] text-text-light dark:text-slate-500 flex items-center gap-1 font-normal">
             <Percent className="h-3 w-3" />
             <span>CGST + SGST + IGST</span>
           </div>
         </div>
 
         <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-6 shadow-soft space-y-1.5">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-text-secondary dark:text-slate-500">CGST + SGST Split</span>
-          <h2 className="text-xl font-extrabold text-text-primary dark:text-slate-150">
+          <span className="text-[10px] font-medium uppercase tracking-wider text-text-secondary dark:text-slate-500">CGST + SGST Split</span>
+          <h2 className="text-xl font-bold text-text-primary dark:text-slate-150">
             {formatRupee((report?.totalCgst || 0) + (report?.totalSgst || 0))}
           </h2>
-          <div className="text-[10px] text-text-light dark:text-slate-500 font-semibold">
+          <div className="text-[10px] text-text-light dark:text-slate-500 font-normal">
             CGST: {formatRupee(report?.totalCgst || 0)} | SGST: {formatRupee(report?.totalSgst || 0)}
           </div>
         </div>
 
         <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-6 shadow-soft space-y-1.5">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-text-secondary dark:text-slate-500">IGST (Inter-State)</span>
-          <h2 className="text-xl font-extrabold text-text-primary dark:text-slate-150">{formatRupee(report?.totalIgst || 0)}</h2>
-          <div className="text-[10px] text-text-light dark:text-slate-500 flex items-center gap-1">
+          <span className="text-[10px] font-medium uppercase tracking-wider text-text-secondary dark:text-slate-500">IGST (Inter-State)</span>
+          <h2 className="text-xl font-bold text-text-primary dark:text-slate-150">{formatRupee(report?.totalIgst || 0)}</h2>
+          <div className="text-[10px] text-text-light dark:text-slate-500 flex items-center gap-1 font-normal">
             <Calculator className="h-3 w-3" />
             <span>Out of state transactions</span>
           </div>

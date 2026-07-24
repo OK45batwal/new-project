@@ -100,19 +100,19 @@ export const Dashboard: React.FC = () => {
   });
 
   return (
-    <div className="space-y-6 pb-12 animate-fade-slide-up">
+    <div className="space-y-6 pb-12">
       {/* Top Welcome Hero Banner */}
       <div className="relative overflow-hidden bg-gradient-to-r from-[#0A1128] via-[#0062FF] to-[#0A1128] rounded-3xl p-6 md:p-8 text-white shadow-premium border border-slate-800/80">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-blue-200 text-xs font-semibold">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-blue-200 text-xs font-medium">
               <Sparkles className="h-3.5 w-3.5 text-blue-300" />
               <span>{todayDateStr}</span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-black tracking-tight">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
               invoiceflow<span className="text-blue-300 font-bold">-billing</span>
             </h1>
-            <p className="text-xs md:text-sm text-blue-100 max-w-xl font-medium tracking-wide">
+            <p className="text-xs md:text-sm text-blue-100 max-w-xl font-normal tracking-wide">
               Create. Manage. Get Paid. Real-time invoicing dashboard.
             </p>
           </div>
@@ -120,7 +120,7 @@ export const Dashboard: React.FC = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={() => handleQuickAction('gst-invoice')}
-              className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white text-blue-600 hover:bg-blue-50 text-xs font-black shadow-card active:scale-95 transition-all"
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-white text-blue-600 hover:bg-blue-50 text-xs font-normal shadow-card active:scale-95 transition-all"
             >
               <FileSpreadsheet className="h-4 w-4 text-blue-600" />
               <span>+ GST Bill</span>
@@ -128,7 +128,7 @@ export const Dashboard: React.FC = () => {
 
             <button
               onClick={() => handleQuickAction('nongst-invoice')}
-              className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-blue-900/60 hover:bg-blue-900/80 text-white text-xs font-bold border border-blue-400/30 transition-all active:scale-95"
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-blue-900/60 hover:bg-blue-900/80 text-white text-xs font-normal border border-blue-400/30 transition-all active:scale-95"
             >
               <FileText className="h-4 w-4" />
               <span>+ Non-GST</span>
@@ -150,8 +150,8 @@ export const Dashboard: React.FC = () => {
             <FileSpreadsheet className="h-5 w-5" />
           </div>
           <div>
-            <div className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">Invoices</div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Create easily</div>
+            <div className="text-xs font-medium text-slate-900 dark:text-white uppercase tracking-wider">Invoices</div>
+            <div className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">Create easily</div>
           </div>
         </div>
 
@@ -163,8 +163,8 @@ export const Dashboard: React.FC = () => {
             <Zap className="h-5 w-5" />
           </div>
           <div>
-            <div className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">Flow</div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Streamline workflow</div>
+            <div className="text-xs font-medium text-slate-900 dark:text-white uppercase tracking-wider">Flow</div>
+            <div className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">Streamline workflow</div>
           </div>
         </div>
 
@@ -176,8 +176,8 @@ export const Dashboard: React.FC = () => {
             <TrendingUp className="h-5 w-5" />
           </div>
           <div>
-            <div className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">Manage</div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Track & organize</div>
+            <div className="text-xs font-medium text-slate-900 dark:text-white uppercase tracking-wider">Manage</div>
+            <div className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">Track & organize</div>
           </div>
         </div>
 
@@ -189,8 +189,8 @@ export const Dashboard: React.FC = () => {
             <ShieldCheck className="h-5 w-5" />
           </div>
           <div>
-            <div className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider">Get Paid</div>
-            <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Faster & securely</div>
+            <div className="text-xs font-medium text-slate-900 dark:text-white uppercase tracking-wider">Get Paid</div>
+            <div className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">Faster & securely</div>
           </div>
         </div>
       </div>
@@ -201,7 +201,7 @@ export const Dashboard: React.FC = () => {
         <div className="lg:col-span-2 bg-gradient-to-br from-blue-600/10 via-blue-600/5 to-transparent dark:from-blue-600/20 dark:to-transparent border border-blue-200/50 dark:border-slate-800 rounded-3xl p-6 shadow-soft flex flex-col justify-between hover-lift">
           <div className="flex justify-between items-start">
             <div className="space-y-1">
-              <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">Performance</span>
+              <span className="text-[10px] font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider">Performance</span>
               <h3 className="text-sm font-bold text-slate-600 dark:text-slate-400">Monthly Sales Volume</h3>
             </div>
             <div className="p-3 rounded-2xl bg-blue-600 text-white shadow-card shadow-blue-600/30">
@@ -209,8 +209,8 @@ export const Dashboard: React.FC = () => {
             </div>
           </div>
           <div className="mt-4">
-            <h2 className="text-3xl font-black text-slate-900 dark:text-white">{formatRupee(monthlySales)}</h2>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium">Sales recorded in {months[currentMonth]}</p>
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">{formatRupee(monthlySales)}</h2>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-normal">Sales recorded in {months[currentMonth]}</p>
           </div>
         </div>
 
@@ -223,8 +223,8 @@ export const Dashboard: React.FC = () => {
             </div>
           </div>
           <div className="mt-4">
-            <h2 className="text-2xl font-black text-slate-900 dark:text-white">{formatRupee(todaySales)}</h2>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium">{todayInvoicesCount} bills generated today</p>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{formatRupee(todaySales)}</h2>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-normal">{todayInvoicesCount} bills generated today</p>
           </div>
         </div>
 
@@ -237,8 +237,8 @@ export const Dashboard: React.FC = () => {
             </div>
           </div>
           <div className="mt-4">
-            <h2 className="text-2xl font-black text-slate-900 dark:text-white">{formatRupee(totalGstCollected)}</h2>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium">CGST + SGST + IGST accumulated</p>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{formatRupee(totalGstCollected)}</h2>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-normal">CGST + SGST + IGST accumulated</p>
           </div>
         </div>
       </div>
@@ -249,10 +249,10 @@ export const Dashboard: React.FC = () => {
         <div className="lg:col-span-3 bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-soft flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">Analytics</span>
+              <span className="text-[10px] font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider">Analytics</span>
               <h3 className="text-base font-bold text-slate-900 dark:text-white">Live Revenue Growth Trend</h3>
             </div>
-            <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400 text-xs font-bold">
+            <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400 text-xs font-medium">
               <span>Real-time</span>
               <ArrowUpRight className="h-4 w-4" />
             </div>
@@ -297,7 +297,7 @@ export const Dashboard: React.FC = () => {
               })}
             </svg>
 
-            <div className="flex justify-between px-2 text-[10px] text-slate-400 font-semibold mt-2 border-t border-slate-100 dark:border-slate-800 pt-2">
+            <div className="flex justify-between px-2 text-[10px] text-slate-400 font-medium mt-2 border-t border-slate-100 dark:border-slate-800 pt-2">
               {months.map((m) => (
                 <span key={m}>{m}</span>
               ))}
@@ -309,7 +309,7 @@ export const Dashboard: React.FC = () => {
         <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 shadow-soft flex flex-col justify-between">
           <div className="space-y-4">
             <div>
-              <span className="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-wider">Directory</span>
+              <span className="text-[10px] font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider">Directory</span>
               <h3 className="text-sm font-bold text-slate-900 dark:text-white">Quick Navigation</h3>
             </div>
             
@@ -319,7 +319,7 @@ export const Dashboard: React.FC = () => {
                 className="flex flex-col gap-1 p-3 rounded-2xl border border-slate-100 dark:border-slate-800 hover:bg-blue-50 dark:hover:bg-slate-800 transition-all text-left group"
               >
                 <Plus className="h-5 w-5 text-blue-600 group-hover:scale-110 transition-transform" />
-                <span className="text-[11px] font-bold text-slate-900 dark:text-slate-200">GST Bill</span>
+                <span className="text-[11px] font-normal text-slate-900 dark:text-slate-200">GST Bill</span>
               </button>
 
               <button
@@ -327,7 +327,7 @@ export const Dashboard: React.FC = () => {
                 className="flex flex-col gap-1 p-3 rounded-2xl border border-slate-100 dark:border-slate-800 hover:bg-emerald-50 dark:hover:bg-slate-800 transition-all text-left group"
               >
                 <Users className="h-5 w-5 text-emerald-600 group-hover:scale-110 transition-transform" />
-                <span className="text-[11px] font-bold text-slate-900 dark:text-slate-200">Customers</span>
+                <span className="text-[11px] font-normal text-slate-900 dark:text-slate-200">Customers</span>
               </button>
 
               <button
@@ -335,7 +335,7 @@ export const Dashboard: React.FC = () => {
                 className="flex flex-col gap-1 p-3 rounded-2xl border border-slate-100 dark:border-slate-800 hover:bg-amber-50 dark:hover:bg-slate-800 transition-all text-left group"
               >
                 <Package className="h-5 w-5 text-amber-600 group-hover:scale-110 transition-transform" />
-                <span className="text-[11px] font-bold text-slate-900 dark:text-slate-200">Inventory</span>
+                <span className="text-[11px] font-normal text-slate-900 dark:text-slate-200">Inventory</span>
               </button>
 
               <button
@@ -343,19 +343,19 @@ export const Dashboard: React.FC = () => {
                 className="flex flex-col gap-1 p-3 rounded-2xl border border-slate-100 dark:border-slate-800 hover:bg-purple-50 dark:hover:bg-slate-800 transition-all text-left group"
               >
                 <TrendingUp className="h-5 w-5 text-purple-600 group-hover:scale-110 transition-transform" />
-                <span className="text-[11px] font-bold text-slate-900 dark:text-slate-200">Analytics</span>
+                <span className="text-[11px] font-normal text-slate-900 dark:text-slate-200">Analytics</span>
               </button>
             </div>
           </div>
           
-          <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-2 text-center text-xs font-bold text-slate-500 dark:text-slate-400">
+          <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-2 text-center text-xs font-normal text-slate-500 dark:text-slate-400">
             <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl">
-              <div className="text-slate-900 dark:text-white font-black text-base">{customers.length}</div>
-              <div className="text-[9px] text-slate-400 uppercase tracking-wider mt-0.5">Customers</div>
+              <div className="text-slate-900 dark:text-white font-bold text-base">{customers.length}</div>
+              <div className="text-[9px] text-slate-400 uppercase font-medium tracking-wider mt-0.5">Customers</div>
             </div>
             <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl">
-              <div className="text-slate-900 dark:text-white font-black text-base">{products.length}</div>
-              <div className="text-[9px] text-slate-400 uppercase tracking-wider mt-0.5">Products</div>
+              <div className="text-slate-900 dark:text-white font-bold text-base">{products.length}</div>
+              <div className="text-[9px] text-slate-400 uppercase font-medium tracking-wider mt-0.5">Products</div>
             </div>
           </div>
         </div>
@@ -366,11 +366,11 @@ export const Dashboard: React.FC = () => {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-white">Recent Invoices</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Latest bills issued</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-normal">Latest bills issued</p>
           </div>
           <button 
             onClick={() => handleQuickAction('invoice-history')} 
-            className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 font-bold hover:underline"
+            className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 font-normal hover:underline"
           >
             <span>View All ({invoices.length})</span>
             <ChevronRight className="h-4 w-4" />
@@ -391,8 +391,8 @@ export const Dashboard: React.FC = () => {
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-sm text-slate-900 dark:text-white">{inv.invoice_number}</span>
-                    <span className={`px-2 py-0.5 text-[9px] font-bold uppercase rounded-full border ${
+                    <span className="font-normal text-sm text-slate-900 dark:text-white">{inv.invoice_number}</span>
+                    <span className={`px-2 py-0.5 text-[9px] font-medium uppercase rounded-full border ${
                       inv.payment_status === 'Paid' 
                         ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-950/30 dark:border-emerald-800/40' 
                         : 'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-950/30 dark:border-amber-800/40'
@@ -400,18 +400,18 @@ export const Dashboard: React.FC = () => {
                       {inv.payment_status}
                     </span>
                   </div>
-                  <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">{inv.customer_snapshot?.name || 'Customer'}</div>
-                  <div className="text-[10px] text-slate-400">{new Date(inv.invoice_date).toLocaleDateString('en-IN')}</div>
+                  <div className="text-xs text-slate-600 dark:text-slate-400 font-normal">{inv.customer_snapshot?.name || 'Customer'}</div>
+                  <div className="text-[10px] text-slate-400 font-normal">{new Date(inv.invoice_date).toLocaleDateString('en-IN')}</div>
                 </div>
 
                 <div className="text-right">
-                  <div className="font-black text-sm text-slate-900 dark:text-white">{formatRupee(inv.grand_total)}</div>
-                  <span className="text-[10px] text-blue-600 dark:text-blue-400 font-bold">Edit →</span>
+                  <div className="font-bold text-sm text-slate-900 dark:text-white">{formatRupee(inv.grand_total)}</div>
+                  <span className="text-[10px] text-blue-600 dark:text-blue-400 font-normal">Edit →</span>
                 </div>
               </div>
             ))
           ) : (
-            <div className="text-center py-6 text-xs text-slate-500">No invoices generated yet. Click "+ GST Bill" to create your first invoice.</div>
+            <div className="text-center py-6 text-xs text-slate-500 font-normal">No invoices generated yet. Click "+ GST Bill" to create your first invoice.</div>
           )}
         </div>
 
@@ -419,7 +419,7 @@ export const Dashboard: React.FC = () => {
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-100 dark:border-slate-800 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              <tr className="border-b border-slate-100 dark:border-slate-800 text-[10px] font-medium text-slate-400 uppercase tracking-wider">
                 <th className="pb-3 pl-2">Invoice No</th>
                 <th className="pb-3">Customer</th>
                 <th className="pb-3">Type</th>
@@ -429,22 +429,22 @@ export const Dashboard: React.FC = () => {
                 <th className="pb-3 text-right pr-2">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-normal">
               {recentInvoicesList && recentInvoicesList.length > 0 ? (
                 recentInvoicesList.map((inv: any) => (
                   <tr key={inv.id} className="text-sm text-slate-900 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                    <td className="py-3.5 font-bold pl-2">
+                    <td className="py-3.5 font-normal pl-2">
                       {inv.invoice_number}
                     </td>
                     <td className="py-3.5">
-                      <div className="font-bold text-slate-900 dark:text-white">
+                      <div className="font-normal text-slate-900 dark:text-white">
                         {inv.customer_snapshot?.name || 'Customer'}
                       </div>
                       <div className="text-[10px] text-slate-500">
                         {inv.customer_snapshot?.company_name || 'Individual'}
                       </div>
                     </td>
-                    <td className="py-3.5 text-xs font-semibold text-slate-500">
+                    <td className="py-3.5 text-xs font-normal text-slate-500">
                       {inv.invoice_type}
                     </td>
                     <td className="py-3.5 text-xs text-slate-500">
@@ -454,11 +454,11 @@ export const Dashboard: React.FC = () => {
                         year: 'numeric'
                       })}
                     </td>
-                    <td className="py-3.5 font-black text-slate-900 dark:text-white">
+                    <td className="py-3.5 font-bold text-slate-900 dark:text-white">
                       {formatRupee(inv.grand_total)}
                     </td>
                     <td className="py-3.5">
-                      <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase border
+                      <span className={`inline-flex px-2.5 py-0.5 rounded-full text-[9px] font-medium uppercase border
                         ${inv.payment_status === 'Paid' 
                           ? 'bg-emerald-50 border-emerald-200 text-emerald-600 dark:bg-emerald-950/30 dark:border-emerald-800/30 dark:text-emerald-400' 
                           : 'bg-amber-50 border-amber-200 text-amber-600 dark:bg-amber-950/30 dark:border-amber-800/30 dark:text-amber-400'
@@ -473,7 +473,7 @@ export const Dashboard: React.FC = () => {
                           setSelectedInvoiceIdForEdit(inv.id);
                           setActivePage(inv.invoice_type === 'GST' ? 'gst-invoice' : 'nongst-invoice');
                         }}
-                        className="inline-flex items-center gap-1 text-xs text-blue-600 font-bold hover:underline"
+                        className="inline-flex items-center gap-1 text-xs text-blue-600 font-normal hover:underline"
                       >
                         <ExternalLink className="h-3.5 w-3.5" />
                         <span>Manage</span>
@@ -483,7 +483,7 @@ export const Dashboard: React.FC = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="text-center py-8 text-xs text-slate-500 font-medium">
+                  <td colSpan={7} className="text-center py-8 text-xs text-slate-500 font-normal">
                     No recent invoices found. Click "+ GST Bill" to create your first invoice.
                   </td>
                 </tr>
