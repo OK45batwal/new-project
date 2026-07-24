@@ -60,7 +60,7 @@ export const Dialog: React.FC<DialogProps> = ({
 
       {/* Modal Card Container */}
       <div
-        className={`relative w-full ${sizeClasses[size]} max-h-[calc(100vh-2.5rem)] bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl shadow-2xl z-10 flex flex-col overflow-hidden animate-scale-in`}
+        className={`relative w-full ${sizeClasses[size]} max-h-[80vh] sm:max-h-[82vh] bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl shadow-2xl z-10 flex flex-col overflow-hidden animate-scale-in`}
       >
         {/* Header (Pinned Top) */}
         <div className="flex items-center justify-between px-6 py-3.5 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 flex-shrink-0">
