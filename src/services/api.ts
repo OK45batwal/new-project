@@ -234,6 +234,18 @@ export const api = {
   },
 
   // Invoices API
+  getNextInvoiceNumber: async (): Promise<string> => {
+    try {
+      const data = await request<{ next_number: string }>('/invoices/next-number');
+      return data.next_number;
+    } catch {
+      const year = new Date().getFullYear();
+      const localSaved = JSON.parse(localStorage.getItem('invoiceflow_saved_invoices') || '[]');
+      const count = localSaved.length + 1;
+      return `INV-${year}-${String(count).padStart(4, '0')}`;
+    }
+  },
+
   getInvoices: async (filters?: { search?: string; type?: string; status?: string; start_date?: string; end_date?: string }): Promise<Invoice[]> => {
     try {
       let url = '/invoices?';

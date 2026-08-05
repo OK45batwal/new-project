@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
 import { useApp } from '../../context/AppContext';
+import { api } from '../../services/api';
 import { prefetchCache } from '../../services/prefetchCache';
 import { Invoice, InvoiceItem, Customer, PaymentMode, PaymentStatus, BusinessProfile } from '../../types';
 import { calculateInvoiceTotals, numberToWords, INDIAN_STATES } from '../../utils/gstEngine';
@@ -17,7 +18,9 @@ import {
   Building,
   ArrowLeft,
   Info,
-  Share2
+  Share2,
+  Barcode,
+  Keyboard
 } from 'lucide-react';
 
 interface InvoiceEditorProps {
@@ -97,23 +100,13 @@ export const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ type }) => {
       setTerms(editInvoice.terms_conditions || '');
     } else {
       // Auto-increment logic
-      const prefix = type === 'GST' ? 'GST-' : 'BILL-';
-      const year = new Date().getFullYear();
-      
-      const filtered = invoices.filter(inv => inv.invoice_number.startsWith(`${prefix}${year}-`));
-      let nextNum = 1;
-      
-      if (filtered.length > 0) {
-        const numbers = filtered.map(inv => {
-          const parts = inv.invoice_number.split('-');
-          const lastPart = parts[parts.length - 1];
-          return parseInt(lastPart) || 0;
-        });
-        nextNum = Math.max(...numbers) + 1;
-      }
-      
-      const paddedNum = String(nextNum).padStart(4, '0');
-      setInvoiceNumber(`${prefix}${year}-${paddedNum}`);
+      api.getNextInvoiceNumber().then(nextNum => {
+        setInvoiceNumber(nextNum);
+      }).catch(() => {
+        const prefix = type === 'GST' ? 'GST-' : 'BILL-';
+        const year = new Date().getFullYear();
+        setInvoiceNumber(`${prefix}${year}-0001`);
+      });
       setInvoiceDate(new Date().toISOString().split('T')[0]);
       setDueDate('');
       setPaymentMode('UPI');
@@ -124,7 +117,63 @@ export const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ type }) => {
         { product_name: '', description: '', hsn_code: '', quantity: 1, unit: 'PCS', rate: 0, discount_pct: 0, gst_rate: type === 'GST' ? 18 : 0, cgst_rate: type === 'GST' ? 9 : 0, sgst_rate: type === 'GST' ? 9 : 0, cgst_amount: 0, sgst_amount: 0, igst_amount: 0, amount: 0 }
       ]);
     }
-  }, [editInvoice, invoices, type]);
+  }, [editInvoice, type]);
+
+  // POS Barcode & Fast Scan
+  const [barcodeInput, setBarcodeInput] = useState('');
+
+  const handleBarcodeScan = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && barcodeInput.trim()) {
+      e.preventDefault();
+      const code = barcodeInput.trim().toLowerCase();
+      const matched = products.find(p => 
+        (p.barcode && p.barcode.toLowerCase() === code) ||
+        (p.sku && p.sku.toLowerCase() === code) ||
+        p.name.toLowerCase().includes(code)
+      );
+
+      if (matched) {
+        const existingIdx = items.findIndex(i => i.product_id === matched.id || i.product_name === matched.name);
+        if (existingIdx > -1) {
+          setItems(prev => {
+            const updated = [...prev];
+            updated[existingIdx] = {
+              ...updated[existingIdx],
+              quantity: updated[existingIdx].quantity + 1
+            };
+            return updated;
+          });
+        } else {
+          const newItem: InvoiceItem = {
+            product_id: matched.id,
+            product_name: matched.name,
+            description: matched.description || '',
+            hsn_code: matched.hsn_code || '',
+            quantity: 1,
+            unit: matched.unit || 'PCS',
+            rate: Number(matched.selling_price) || 0,
+            discount_pct: 0,
+            gst_rate: type === 'GST' ? (Number(matched.gst_rate) || 18) : 0,
+            cgst_rate: type === 'GST' ? (matched.gst_rate ? Number(matched.gst_rate) / 2 : 9) : 0,
+            sgst_rate: type === 'GST' ? (matched.gst_rate ? Number(matched.gst_rate) / 2 : 9) : 0,
+            cgst_amount: 0,
+            sgst_amount: 0,
+            igst_amount: 0,
+            amount: 0
+          };
+          if (items.length === 1 && !items[0].product_name) {
+            setItems([newItem]);
+          } else {
+            setItems(prev => [...prev, newItem]);
+          }
+        }
+        showToast(`Added ${matched.name} to bill`, 'success');
+        setBarcodeInput('');
+      } else {
+        showToast(`No product found for '${barcodeInput}'`, 'warning');
+      }
+    }
+  };
 
   // Early Execution: Auto-calculate totals, pre-generate UPI QR code, and stage draft in real-time background
   useEffect(() => {
@@ -518,6 +567,25 @@ export const InvoiceEditor: React.FC<InvoiceEditorProps> = ({ type }) => {
                 {customerDetails.gstin && <p className="text-blue-600 dark:text-blue-400">GSTIN: {customerDetails.gstin}</p>}
               </div>
             )}
+          </div>
+
+          {/* POS Barcode & Fast Scan Bar */}
+          <div className="p-3.5 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-2xl flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary-600 dark:text-primary-400 shrink-0">
+              <Barcode className="h-4 w-4" /> POS Fast Scan:
+            </div>
+            <input
+              type="text"
+              value={barcodeInput}
+              onChange={e => setBarcodeInput(e.target.value)}
+              onKeyDown={handleBarcodeScan}
+              placeholder="Scan barcode, SKU, or type product name & press Enter..."
+              className="flex-1 h-9 px-3 text-xs border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary text-text-primary dark:text-slate-250"
+            />
+            <div className="flex items-center gap-2 text-[10px] font-medium text-text-secondary dark:text-slate-400 shrink-0">
+              <Keyboard className="h-3.5 w-3.5 text-text-light" />
+              <span><kbd className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-700 rounded font-mono">F2</kbd> Add row | <kbd className="px-1.5 py-0.5 bg-slate-200 dark:bg-slate-700 rounded font-mono">Ctrl+Enter</kbd> Save</span>
+            </div>
           </div>
 
           {/* Items Table */}

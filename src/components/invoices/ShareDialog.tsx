@@ -383,16 +383,26 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({ isOpen, onClose, invoi
   };
 
   const handleWhatsApp = () => {
+    const custPhone = invoice.customer_snapshot?.mobile ? invoice.customer_snapshot.mobile.replace(/\D/g, '') : '';
+    const phoneParam = custPhone ? (custPhone.length === 10 ? `91${custPhone}` : custPhone) : '';
+    
     const text = [
       `*${isGst ? 'TAX INVOICE' : 'INVOICE'}: ${invoice.invoice_number}*`,
-      `Customer: ${invoice.customer_snapshot.name}${invoice.customer_snapshot.company_name ? ` (${invoice.customer_snapshot.company_name})` : ''}`,
-      `Amount: ₹${Number(invoice.grand_total).toFixed(2)}`,
+      `Greetings from ${invoice.seller_snapshot?.business_name || 'our store'}!`,
+      `Customer: ${invoice.customer_snapshot?.name || 'Valued Customer'}`,
+      `Total Amount: ₹${Number(invoice.grand_total).toFixed(2)}`,
       `Date: ${new Date(invoice.invoice_date).toLocaleDateString('en-IN')}`,
       `Status: ${invoice.payment_status}`,
       ``,
-      `View: ${window.location.origin}/invoice/${invoice.id}`,
+      `View Invoice online: ${window.location.origin}/invoice/${invoice.id}`,
+      `Thank you for your business!`
     ].join('\n');
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+
+    const targetUrl = phoneParam 
+      ? `https://wa.me/${phoneParam}?text=${encodeURIComponent(text)}`
+      : `https://wa.me/?text=${encodeURIComponent(text)}`;
+
+    window.open(targetUrl, '_blank');
     onClose();
   };
 

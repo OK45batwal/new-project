@@ -238,6 +238,35 @@ app.get('/api/invoices', async (req, res) => {
   }
 });
 
+app.get('/api/invoices/next-number', async (req, res) => {
+  try {
+    const year = new Date().getFullYear();
+    const prefix = `INV-${year}-`;
+    
+    const { data, error } = await supabase
+      .from('invoices')
+      .select('invoice_number')
+      .ilike('invoice_number', `${prefix}%`)
+      .order('invoice_number', { ascending: false })
+      .limit(1);
+
+    if (error) throw error;
+
+    let nextNum = 1;
+    if (data && data.length > 0) {
+      const match = data[0].invoice_number.match(/-(\d+)$/);
+      if (match) {
+        nextNum = parseInt(match[1], 10) + 1;
+      }
+    }
+    
+    const padded = String(nextNum).padStart(4, '0');
+    res.json({ next_number: `${prefix}${padded}` });
+  } catch (error) {
+    handleError(res, error, "GET next-number");
+  }
+});
+
 app.get('/api/invoices/:id', async (req, res) => {
   try {
     const { data: invoice, error: invError } = await supabase
@@ -415,12 +444,43 @@ app.put('/api/invoices/:id', async (req, res) => {
 
 app.delete('/api/invoices/:id', async (req, res) => {
   try {
+    const invoiceId = req.params.id;
+
+    // 1. Fetch invoice items to restore product stock
+    const { data: items } = await supabase
+      .from('invoice_items')
+      .select('product_id, quantity')
+      .eq('invoice_id', invoiceId);
+
+    if (items && items.length > 0) {
+      const stockItems = items.filter(item => item.product_id && item.quantity);
+      if (stockItems.length > 0) {
+        const productIds = Array.from(new Set(stockItems.map(i => i.product_id)));
+        const { data: prods } = await supabase
+          .from('products')
+          .select('id, stock')
+          .in('id', productIds);
+
+        if (prods && prods.length > 0) {
+          for (const item of stockItems) {
+            const prod = prods.find(p => p.id === item.product_id);
+            if (prod && prod.stock !== null) {
+              const restoredStock = Number(prod.stock) + Number(item.quantity);
+              await supabase.from('products').update({ stock: restoredStock }).eq('id', item.product_id);
+            }
+          }
+        }
+      }
+    }
+
+    // 2. Delete invoice (cascade deletes items)
     const { error } = await supabase
       .from('invoices')
       .delete()
-      .eq('id', req.params.id);
+      .eq('id', invoiceId);
+      
     if (error) throw error;
-    res.json({ message: 'Invoice deleted successfully' });
+    res.json({ message: 'Invoice deleted and stock restored successfully' });
   } catch (error) {
     handleError(res, error, "DELETE invoice");
   }
